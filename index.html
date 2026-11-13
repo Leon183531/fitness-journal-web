@@ -88,16 +88,18 @@
     </article>
   </section>
   <footer id="fj-footer">
-    <div id="fj-dock" hidden>
-      <div><strong id="fj-active-action"></strong><small id="fj-active-sets" aria-live="polite"></small></div>
-      <button id="fj-quick-set" class="record" type="button">记一组</button>
+    <div class="footer-card">
+      <div id="fj-dock" hidden>
+        <div><strong id="fj-active-action"></strong><small id="fj-active-sets" aria-live="polite"></small></div>
+        <button id="fj-quick-set" class="record" type="button">记一组</button>
+      </div>
+      <nav aria-label="页面">
+        <button data-page="today" aria-pressed="true">训练</button>
+        <button data-page="journal" aria-pressed="false">日记</button>
+        <button data-page="calendar" aria-pressed="false">日历</button>
+        <button data-page="library" aria-pressed="false">动作库</button>
+      </nav>
     </div>
-    <nav aria-label="页面">
-      <button data-page="today" aria-pressed="true">训练</button>
-      <button data-page="journal" aria-pressed="false">日记</button>
-      <button data-page="calendar" aria-pressed="false">日历</button>
-      <button data-page="library" aria-pressed="false">动作库</button>
-    </nav>
   </footer>
 </div>
 </main>
@@ -111,7 +113,7 @@ body {margin:0}
   --edge:light-dark(#eae5ee,#3e3848);
   color:var(--ink); font:15px/1.5 system-ui,sans-serif; max-width:480px; margin:auto;
   padding:max(16px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
-    calc(var(--footer-height, 76px) + 24px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    calc(var(--footer-height, 92px) + 8px) max(12px, env(safe-area-inset-left));
 }
 #fitness-journal header {display:flex; align-items:center; gap:12px; padding:2px 4px 18px}
 #fitness-journal .brand-mark {display:grid; place-items:center; width:44px; height:44px; border-radius:15px; background:var(--plum); color:var(--paper); font-size:22px}
@@ -146,7 +148,8 @@ body {margin:0}
 #fitness-journal .day-extra {font-size:11px; color:var(--muted)}
 #fitness-journal .fields {display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:8px 0}
 #fitness-journal #fj-training .fields {grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
-#fitness-journal footer {position:fixed; bottom:calc(8px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); width:min(480px, calc(100% - 24px - env(safe-area-inset-left) - env(safe-area-inset-right))); box-sizing:border-box; z-index:2; background:var(--paper); border:1px solid var(--edge); border-radius:17px; box-shadow:0 3px 18px #22153116; padding:5px}
+#fitness-journal footer {position:fixed; bottom:0; left:0; width:100%; box-sizing:border-box; z-index:2; background:light-dark(#f5f4f7,#18171d); padding:8px calc(12px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left))}
+#fitness-journal .footer-card {max-width:480px; margin:auto; box-sizing:border-box; background:var(--paper); border:1px solid var(--edge); border-radius:17px; box-shadow:0 3px 18px #22153116; padding:5px}
 #fitness-journal nav {display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px}
 #fitness-journal nav button {background:transparent; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:13px}
 #fitness-journal nav button[aria-pressed=true] {background:var(--badge); color:var(--plum)}

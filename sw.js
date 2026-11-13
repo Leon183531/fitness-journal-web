@@ -1,4 +1,4 @@
-const cacheName = 'fitness-journal-shell-v7';
+const cacheName = 'fitness-journal-shell-v8';
 const shell = ['./index.html', './app.js', './diary.mjs', './photos.mjs', './backup.mjs', './manifest.webmanifest', './icon.png', './icon-512.png'];
 
 self.addEventListener('install', event => {

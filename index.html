@@ -38,8 +38,8 @@
       <label>体重（kg）<input id="fj-body-weight" type="number" min="0.01" step="any" inputmode="decimal" placeholder="例如 68.5"></label>
       <small id="fj-weight-status" role="status"></small>
       <label class="journal-note">日记备注<textarea id="fj-note" rows="3" placeholder="写一句今天想记住的话…"></textarea></label>
-      <div id="fj-photos"></div>
     </article>
+    <article id="fj-photos"></article>
     <article><h2>近 30 天体重趋势</h2><div id="fj-trend"></div></article>
     <article><details id="fj-compare-details">
       <summary>照片对比</summary>
@@ -68,7 +68,7 @@
   </section>
   <section id="fj-entry" hidden>
     <button type="button" id="fj-back">‹ 返回日历</button>
-    <article id="fj-day"></article>
+    <div id="fj-day"></div>
   </section>
   <section id="fj-library" hidden>
     <article>
@@ -169,7 +169,24 @@ body {margin:0}
 #fitness-journal .wheel input {min-width:0; touch-action:pan-x}
 #fitness-journal .entry-action,#fitness-journal .journal-note {margin-top:12px}
 #fitness-journal .journal-note {display:block}
-#fitness-journal #fj-photos,#fitness-journal .photo-panel {border-top:1px solid var(--edge); margin-top:12px; padding-top:5px}
+#fitness-journal .previous-training {white-space:pre-line}
+#fitness-journal .set-list {list-style:none; padding:0; margin:8px 0}
+#fitness-journal .set-list li {display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px solid var(--edge)}
+#fitness-journal .set-list li:last-child {border-bottom:0}
+#fitness-journal .set-count {color:var(--muted); font-variant-numeric:tabular-nums}
+#fitness-journal .set-value {font-weight:600; font-variant-numeric:tabular-nums}
+#fitness-journal .day-section {margin:12px 0}
+#fitness-journal #fj-day > .day-section {background:var(--paper); border:1px solid var(--edge); border-radius:21px; padding:16px}
+#fitness-journal #fj-day > .mood {background:linear-gradient(120deg,light-dark(#faebe7,#3a2b35),light-dark(#eae9f7,#2d3547))}
+#fitness-journal .entry-overview .row {align-items:center; margin-bottom:0}
+#fitness-journal .entry-overview .mark {margin:0; padding:3px 10px; border-radius:8px; font-size:13px}
+#fitness-journal .entry-action {background:var(--soft); border-radius:14px; padding:12px}
+#fitness-journal .entry-action h3 {margin:0}
+#fitness-journal .entry-action .set-list {margin-bottom:0}
+#fitness-journal .entry-action .action-note {border-top:1px solid var(--edge); padding-top:8px; margin-top:8px; color:var(--muted); font-size:13px}
+#fitness-journal .entry-mood {font-size:22px; font-weight:600}
+#fitness-journal .entry-weight {color:var(--plum); font-weight:600; margin-bottom:10px}
+#fitness-journal .history-date {color:var(--muted); margin-top:12px}
 #fitness-journal .photo-grid {display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:8px}
 #fitness-journal .photo-grid figure {margin:0}
 #fitness-journal .photo-grid img {display:block; width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:10px}

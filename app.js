@@ -105,7 +105,17 @@ function prependIcon(el, type) {
 }
 
 function setText(sets) {
-  return groupSets(sets).map(({ weight, reps, count }) => `${weight} kg × ${reps} 次 × ${count} 组`).join('；');
+  return groupSets(sets).map(({ weight, reps, count }) => `${weight} kg × ${reps} 次 × ${count} 组`).join('\n');
+}
+
+function renderSetRows(parent, sets) {
+  const list = add(parent, 'ol');
+  list.className = 'set-list';
+  for (const { weight, reps, count } of groupSets(sets)) {
+    const row = add(list, 'li');
+    add(row, 'span', `${weight} kg × ${reps} 次`).className = 'set-value';
+    add(row, 'span', `× ${count} 组`).className = 'set-count';
+  }
 }
 
 function hasTraining(day) {
@@ -158,7 +168,7 @@ function actionEditor(parent, action) {
     }
   };
   const previous = historyFor(action.name, selectedDate)[0];
-  add(details, 'small', previous ? `上次 · ${previous.date}　${setText(previous.sets)} ${previous.note}` : '上次 · 暂无记录');
+  add(details, 'small', previous ? `上次 · ${previous.date}\n${setText(previous.sets)}${previous.note ? '\n' + previous.note : ''}` : '上次 · 暂无记录').className = 'previous-training';
   const fields = add(details, 'div');
   fields.className = 'fields';
   const weightField = add(fields, 'div');
@@ -214,7 +224,7 @@ function actionEditor(parent, action) {
     weight.value = last.weight;
     reps.value = last.reps;
   }
-  const rows = add(details, 'p');
+  const rows = add(details, 'div');
   rows.setAttribute('aria-live', 'polite');
   const status = add(details, 'small');
   status.setAttribute('role', 'status');
@@ -268,7 +278,8 @@ function actionEditor(parent, action) {
     summary.textContent = action.name + ' · ' + summary.dataset.sets;
     summary.className = 'action-label';
     prependIcon(summary, actionIcon(action.name));
-    rows.textContent = setText(sets);
+    rows.replaceChildren();
+    renderSetRows(rows, sets);
     undo.disabled = !sets.length;
     if (details.open && !get('today').hidden) showDock();
   }
@@ -373,7 +384,7 @@ function releasePhotoUrls(urls = photoUrls) {
 async function renderPhotos(panel, date, editable) {
   releasePhotoUrls();
   panel.replaceChildren();
-  add(panel, 'h3', '日记照片');
+  add(panel, 'h2', '日记照片');
   const status = add(panel, 'small');
   status.setAttribute('role', 'status');
   let picker;
@@ -590,9 +601,16 @@ function renderEntry() {
   const body = get('day');
   body.replaceChildren();
   const day = state.days[selectedDate];
-  add(body, 'h3', selectedDate + (day?.part ? ' · ' + day.part : ''));
-  if (day) renderDay(body, day);
-  const photos = add(body, 'section');
+  const overview = add(body, 'article');
+  overview.className = 'entry-overview';
+  add(overview, 'h2', selectedDate);
+  const tags = add(overview, 'div');
+  tags.className = 'row';
+  add(tags, 'span', day?.part || '未选训练部位').className = 'mark';
+  const total = day?.actions.reduce((sum, action) => sum + action.sets.reduce((count, set) => count + set.count, 0), 0) || 0;
+  add(tags, 'small', total ? `共 ${total} 组训练` : '这天还没有训练组数');
+  renderDay(body, day || blankDay());
+  const photos = add(body, 'article');
   photos.className = 'photo-panel';
   renderPhotos(photos, selectedDate, false);
   const controls = add(body, 'div');
@@ -608,18 +626,31 @@ function renderEntry() {
 }
 
 function renderDay(parent, day) {
-  if (day.mood) add(parent, 'p', '今日心情 · ' + moodText(day.mood));
-  if (day.bodyWeight != null) add(parent, 'p', '体重 · ' + day.bodyWeight + ' kg');
-  if (day.note) add(parent, 'p', day.note);
+  const training = add(parent, 'section');
+  training.className = 'day-section';
+  add(training, 'h2', '训练内容');
+  if (!day.actions.length) add(training, 'small', '这天还没有训练记录。');
   for (const action of day.actions) {
-    const section = add(parent, 'div');
+    const section = add(training, 'div');
     section.className = 'entry-action';
-    const title = add(section, 'strong', action.name);
+    const title = add(section, 'h3', action.name);
     title.className = 'action-label';
     prependIcon(title, actionIcon(action.name));
-    if (action.sets.length) add(section, 'p', setText(action.sets));
-    if (action.note) add(section, 'p', action.note);
+    if (action.sets.length) renderSetRows(section, action.sets);
+    else add(section, 'small', '还没有记录组数');
+    if (action.note) add(section, 'p', action.note).className = 'action-note';
   }
+  const mood = add(parent, 'section');
+  mood.className = 'day-section mood';
+  add(mood, 'h2', '今日心情');
+  if (day.mood) add(mood, 'p', moodText(day.mood)).className = 'entry-mood';
+  else add(mood, 'small', '这天还没有记录心情。');
+  const journal = add(parent, 'section');
+  journal.className = 'day-section';
+  add(journal, 'h2', '日记');
+  if (day.bodyWeight != null) add(journal, 'p', '体重 · ' + day.bodyWeight + ' kg').className = 'entry-weight';
+  if (day.note) add(journal, 'p', day.note);
+  else add(journal, 'small', '这天还没有写日记。');
 }
 
 function renderLibrary() {
@@ -637,7 +668,8 @@ function renderLibrary() {
       const history = historyFor(name);
       if (!history.length) add(details, 'small', '暂无记录');
       history.forEach(({ date, sets, note }, index) => {
-        add(details, 'p', (index === 0 ? '上次 · ' : '') + date + '　' + setText(sets));
+        add(details, 'p', (index === 0 ? '上次 · ' : '') + date).className = 'history-date';
+        renderSetRows(details, sets);
         if (note) add(details, 'small', note);
       });
     });

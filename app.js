@@ -7,6 +7,10 @@ const get = id => document.getElementById('fj-' + id);
 const nav = root.querySelector('nav');
 const editDone = get('edit-done');
 const dock = get('dock');
+const footer = get('footer');
+new ResizeObserver(() => {
+  root.style.setProperty('--footer-height', footer.getBoundingClientRect().height + 'px');
+}).observe(footer);
 const key = 'fitness-journal-v1';
 let today = dateKey(new Date());
 const defaultMoods = [['😊', '开心'], ['🔥', '练爽了'], ['😌', '平静'], ['😴', '疲惫'], ['☁️', '低落']];
